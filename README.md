@@ -7,7 +7,7 @@ This is a CLI project for retrieving weather information.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/weather-cli.git
+   git clone https://github.com/nabin19677/weather-cli.git
    ```
 
 2. Navigate to the project directory:
