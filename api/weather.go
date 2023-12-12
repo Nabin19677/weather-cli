@@ -2,9 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"time"
+	"weather-cli/utils"
 )
 
 type Weather struct {
@@ -35,27 +38,53 @@ type Weather struct {
 func GetWeatherForecast(location string) (weather Weather) {
 	var API_KEY string = os.Getenv("WEATHER_API_KEY")
 
-	res, err := http.Get("http://api.weatherapi.com/v1/forecast.json?key=" + API_KEY + "&q=" + location + "&days=1&aqi=no&alerts=no")
+	filename := fmt.Sprintf("%s_%s.json", location, time.Now().Format("2006-01-02"))
 
-	if err != nil {
-		panic(err)
+	if utils.FileExistsT(filename) {
+		fmt.Println("FIle Exists")
+		data, err := os.ReadFile(filename)
+
+		if err != nil {
+			return Weather{}
+		}
+
+		err = json.Unmarshal(data, &weather)
+		if err != nil {
+			return Weather{}
+		}
+
+		return
+
+	} else {
+		res, err := http.Get("http://api.weatherapi.com/v1/forecast.json?key=" + API_KEY + "&q=" + location + "&days=1&aqi=no&alerts=no")
+
+		if err != nil {
+			panic(err)
+		}
+
+		defer res.Body.Close()
+
+		if res.StatusCode != 200 {
+			panic("Weather API is not available")
+		}
+
+		body, err := io.ReadAll(res.Body)
+
+		if err != nil {
+			panic(err)
+		}
+
+		err = json.Unmarshal(body, &weather)
+		if err != nil {
+			panic(err)
+		}
+
+		err = utils.WriteToFileT(filename, body)
+
+		if err != nil {
+			panic(err)
+		}
+
+		return
 	}
-
-	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		panic("Weather API is not available")
-	}
-
-	body, err := io.ReadAll(res.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = json.Unmarshal(body, &weather)
-	if err != nil {
-		panic(err)
-	}
-	return
 }
