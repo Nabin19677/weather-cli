@@ -16,7 +16,15 @@ This is a CLI project for retrieving weather information.
    cd weather-cli
    ```
 
-3. Build and install the CLI:
+3. Create .env file.
+
+   ```bash
+   WEATHER_API_KEY = XXXXXXXXXXXXXXXXXXXX
+   ```
+
+   > **Note:** Get API Key from https://www.weatherapi.com/
+
+4. Build and install the CLI:
 
    ```bash
    go build
