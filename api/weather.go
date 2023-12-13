@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"time"
+	"weather-cli/config"
 	"weather-cli/utils"
 )
 
@@ -37,7 +37,7 @@ type Weather struct {
 }
 
 func GetWeatherForecast(location string) (weather Weather) {
-	var API_KEY string = os.Getenv("WEATHER_API_KEY")
+	var API_KEY string = config.GetConfig().WeatherAPIKey
 
 	filename := fmt.Sprintf("%s_%s.json", strings.ToLower(location), time.Now().Format("2006-01-02"))
 
