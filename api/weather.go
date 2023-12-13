@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 	"weather-cli/utils"
 )
@@ -38,11 +39,10 @@ type Weather struct {
 func GetWeatherForecast(location string) (weather Weather) {
 	var API_KEY string = os.Getenv("WEATHER_API_KEY")
 
-	filename := fmt.Sprintf("%s_%s.json", location, time.Now().Format("2006-01-02"))
+	filename := fmt.Sprintf("%s_%s.json", strings.ToLower(location), time.Now().Format("2006-01-02"))
 
 	if utils.FileExistsT(filename) {
-		fmt.Println("FIle Exists")
-		data, err := os.ReadFile(filename)
+		data, err := utils.ReadFileT(filename)
 
 		if err != nil {
 			return Weather{}

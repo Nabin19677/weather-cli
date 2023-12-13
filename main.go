@@ -5,6 +5,7 @@ package main
 
 import (
 	"weather-cli/cmd"
+	"weather-cli/utils"
 
 	"github.com/joho/godotenv"
 )
@@ -12,4 +13,8 @@ import (
 func main() {
 	godotenv.Load(".env")
 	cmd.Execute()
+}
+
+func init() {
+	utils.CreateFolderT()
 }

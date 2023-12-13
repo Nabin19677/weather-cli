@@ -26,6 +26,7 @@ func WriteToFileT(filename string, body []byte) error {
 	return os.WriteFile(filePath, body, 0777)
 }
 
-func init() {
-	CreateFolderT()
+func ReadFileT(filename string) ([]byte, error) {
+	filePath := fmt.Sprintf("%s/%s/%s", os.TempDir(), TEMP_FOLDER, filename)
+	return os.ReadFile(filePath)
 }
