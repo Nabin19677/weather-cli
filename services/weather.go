@@ -1,4 +1,4 @@
-package api
+package services
 
 import (
 	"encoding/json"
@@ -12,7 +12,13 @@ import (
 	"weather-cli/utils"
 )
 
-func GetWeatherForecast(location string) (weather models.Weather) {
+type WeatherProvider interface {
+	GetWeatherForecast(location string) (weather models.Weather)
+}
+
+type WeatherServices struct{}
+
+func (w *WeatherServices) GetWeatherForecast(location string) (weather models.Weather) {
 	var API_KEY string = config.GetConfig().WeatherAPIKey
 
 	filename := fmt.Sprintf("%s_%s.json", strings.ToLower(location), time.Now().Format("2006-01-02"))

@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 	"time"
-	"weather-cli/api"
+	"weather-cli/services"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -19,7 +19,8 @@ var todayCmd = &cobra.Command{
 	Use:   "today",
 	Short: `View Today's Weather Forecast.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		weather := api.GetWeatherForecast(Location)
+		weatherService := &services.WeatherServices{}
+		weather := weatherService.GetWeatherForecast(Location)
 		location, current, hours := weather.Location, weather.Current, weather.Forecast.Forecastday[0].Hour
 
 		color.Yellow("%s, %s: %.0fC, %s\n", location.Name, location.Country, current.TempC, current.Condition.Text)
