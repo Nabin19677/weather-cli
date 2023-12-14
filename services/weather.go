@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 	"weather-cli/config"
 	"weather-cli/models"
@@ -16,10 +17,17 @@ type WeatherProvider interface {
 	GetWeatherForecast(location string) (weather models.Weather)
 }
 
-type WeatherServices struct{}
+type WeatherServices struct {
+	Config *config.AppConfig
+}
+
+var (
+	once     sync.Once
+	instance *WeatherServices
+)
 
 func (w *WeatherServices) GetWeatherForecast(location string) (weather models.Weather) {
-	var API_KEY string = config.GetConfig().WeatherAPIKey
+	var API_KEY string = w.Config.WeatherAPIKey
 
 	filename := fmt.Sprintf("%s_%s.json", strings.ToLower(location), time.Now().Format("2006-01-02"))
 
@@ -69,4 +77,18 @@ func (w *WeatherServices) GetWeatherForecast(location string) (weather models.We
 
 		return
 	}
+}
+
+func NewWeatherServices(config *config.AppConfig) *WeatherServices {
+	once.Do(func() {
+		instance = &WeatherServices{
+			Config: config,
+		}
+	})
+
+	return instance
+}
+
+func GetInstance() *WeatherServices {
+	return instance
 }
