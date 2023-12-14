@@ -8,35 +8,11 @@ import (
 	"strings"
 	"time"
 	"weather-cli/config"
+	"weather-cli/models"
 	"weather-cli/utils"
 )
 
-type Weather struct {
-	Location struct {
-		Name    string `json:"name"`
-		Country string `json:"country"`
-	} `json:"location"`
-	Current struct {
-		TempC     float64 `json:"temp_c"`
-		Condition struct {
-			Text string `json:"text"`
-		} `json:"condition"`
-	} `json:"current"`
-	Forecast struct {
-		Forecastday []struct {
-			Hour []struct {
-				TimeEpoch int64   `json:"time_epoch"`
-				TempC     float64 `json:"temp_c"`
-				Condition struct {
-					Text string `json:"text"`
-				} `json:"condition"`
-				ChanceOfRain float64 `json:"chance_of_rain"`
-			} `json:"hour"`
-		} `json:"forecastday"`
-	} `json:"forecast"`
-}
-
-func GetWeatherForecast(location string) (weather Weather) {
+func GetWeatherForecast(location string) (weather models.Weather) {
 	var API_KEY string = config.GetConfig().WeatherAPIKey
 
 	filename := fmt.Sprintf("%s_%s.json", strings.ToLower(location), time.Now().Format("2006-01-02"))
@@ -45,12 +21,12 @@ func GetWeatherForecast(location string) (weather Weather) {
 		data, err := utils.ReadFileT(filename)
 
 		if err != nil {
-			return Weather{}
+			return models.Weather{}
 		}
 
 		err = json.Unmarshal(data, &weather)
 		if err != nil {
-			return Weather{}
+			return models.Weather{}
 		}
 
 		return
